@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Tip
+  - DisplayCube
+  - DisplayManual
+  - Page 1
+  - Page 2
+  - Page 3
+  - Page 4
+  - Page 5
+  - Page 6
+  - displayManualHide
+  - lego
+  - LegoModel
+  - TagAlong
+  - Lego1
+  - Lego2
+  - Lego3
+  - Lego4
+  - Lego5
+  - Lego6
+  - Lego7
+  - Lego8
+  - Lego9
+  - Lego10
+  - Lego11
+  - Lego12
+  - Lego13
+  - Lego14
+  - Lego15
+  - Lego16
+  - Lego17
+  - Lego18
+  - Lego19
+  - Lego20
+  - Lego21
+  - Lego22
+  - Lego23
+  - Lego24
+  - Lego25
+  - Lego26
+  - Lego27
+  - Lego28
+  - Lego29
+  - Lego30
+  - Lego31
+  - Bridge
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
