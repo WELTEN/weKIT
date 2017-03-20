@@ -9,7 +9,7 @@ public class DebugMessageHandler : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        textMesh = GetComponent<Text>();
+        textMesh = gameObject.GetComponent<Text>();
         
     }
 

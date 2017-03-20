@@ -2,64 +2,103 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Manual behaviour of the model to make visible each block of the model one after another
+/// Possibility to jump directly to the required step
+/// </summary>
 public class BridgeBehaviour : MonoBehaviour {
-
-    int filecount = 1;
-    GameObject g;
-    MeshRenderer rend;
+   List<Transform> legoBlock;
+   int stepNumber = 0;
+   Camera cameraObject;
 
     // Use this for initialization
     void Start()
     {
-        TurnAllPageOff();
-    }
-
-    void TurnAllPageOff()
-    {
-        for (int i=1; i <= 31; i++)
+        cameraObject = Camera.main;
+        legoBlock = new List<Transform>();
+        //Iterate through the first depth of children and add them to list
+        foreach (Transform T in gameObject.GetComponentsInChildren<Transform>())
         {
-            g = GameObject.FindGameObjectWithTag("Lego" + i);
-            rend = g.GetComponent<MeshRenderer>();
-            rend.enabled = false;
+            if (T.parent == gameObject.transform)
+            {
+                legoBlock.Add(T);
+            }
         }
-        
-        Debug.Log("meshturnedoff");
+
+        Debug.Log(legoBlock.Count);
+        //for some reason outputs 56 though i have 63 children
+
+        TurnAllBlockOff();
     }
 
-
-    void TurnPageOn()
+    /// <summary>
+    /// All lego blocks must be invisible at the beggining
+    /// </summary>
+    void TurnAllBlockOff()
     {
-        //if (g)
-        //{
-        //    TurnAllPageOff();
-        //}
+        foreach (Transform T in legoBlock)
+        {
+            foreach (MeshRenderer rend in T.GetComponentsInChildren<MeshRenderer>())
+            {
+                rend.enabled = false;
+            }
+        }
+    }
 
-        g = GameObject.FindGameObjectWithTag("Lego" + filecount);
-        rend = g.GetComponent<MeshRenderer>();
-        rend.enabled = true;
-        Debug.Log("mesh turned on");
+    /// <summary>
+    /// Turn on the number of blocks to be made visible by using the @numberofblocks
+    /// </summary>
+    void TurnModelOn()
+    {
+        for (int i = 0; i <= stepNumber; i++)
+        {
+            if (i < legoBlock.Count)
+            {
+                foreach (MeshRenderer rend in legoBlock[i].GetComponentsInChildren<MeshRenderer>())
+                {
+                    rend.enabled = true;
+                }
+            }
+        }
 
     }
 
-
+    /// <summary>
+    /// Add +1 to numberofblocks
+    /// </summary>
     void AssignNext()
     {
-        if (filecount <= 31)
+        if (stepNumber <= legoBlock.Count)
         {
-            filecount += 1;
-            TurnPageOn();
+            stepNumber += 1;
+            TurnModelOn();
+        }else
+        {
+            Debug.Log("The number of Steps finished");
         }
         
     }
 
     void AssignPrevious()
     {
-        if (filecount > 1)
+        if (stepNumber <= 0 )
         {
-            filecount -= 1;
-            TurnPageOn();
+            stepNumber -= 1;
+            TurnModelOn();
+        }
+
+    }
+
+    void RecordStop()
+    {
+        Debug.Log("crap!!");
+        int i = cameraObject.GetComponent<SpeechToTextManager>().StepNumber();
+        if (0 <= i && i <= legoBlock.Count)
+        {
+            stepNumber = i;
         }
         
+        TurnModelOn();
     }
 
 }

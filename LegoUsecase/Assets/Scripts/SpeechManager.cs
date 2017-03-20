@@ -6,58 +6,83 @@ using UnityEngine.Windows.Speech;
 
 public class SpeechManager : MonoBehaviour
 {
-    KeywordRecognizer keywordRecognizer = null;
+    KeywordRecognizer keywordRecognizer;
     Dictionary<string, System.Action> keywords = new Dictionary<string, System.Action>();
+
+
     Camera cameraObject;
    
     // Use this for initialization
     void Start()
     {
+
         Debug.Log("Speech Recognition started");
         cameraObject = Camera.main;
-        keywords.Add("Snap", () =>
-        {
-            Debug.Log("keyword added");
-           cameraObject.GetComponent<CapturePhoto>().SendMessage("Capture");
+        //keywords.Add("Snap", () =>
+        //{
+        //   Debug.Log("keyword added");
+        //   cameraObject.GetComponent<CapturePhoto>().SendMessage("Capture");
 
-        });
-        keywords.Add("WEKIT", () =>
-        {
-            Debug.Log("keyword added");
-            cameraObject.GetComponent<CapturePhoto>().SendMessage("Capture");
-
-        });
+        //});
 
         keywords.Add("Next", () =>
         {
             Debug.Log("keyword added");
             //GameObject.FindGameObjectWithTag("DisplayManual").SendMessage("AssignNext");
-            GameObject.FindGameObjectWithTag("Bridge").SendMessage("AssignNext");
+            try
+            {
+                GameObject.FindGameObjectWithTag("Bridge").SendMessage("AssignNext");
+            }
+            catch
+            {
+                return;
+            }
 
         });
 
-        //keywords.Add("Previous", () =>
-        //{
-        //    Debug.Log("keyword added");
-        //    GameObject.FindGameObjectWithTag("Bridge").SendMessage("AssignPrevious");
-        //    //GameObject.FindGameObjectWithTag("DisplayManual").SendMessage("AssignPrevious");
+        keywords.Add("Previous", () =>
+        {
+            Debug.Log("keyword added");
+            try
+            {
+                GameObject.FindGameObjectWithTag("Bridge").SendMessage("AssignPrevious");
+            } catch
+            {
+                return;
+            }
+            
+            //GameObject.FindGameObjectWithTag("DisplayManual").SendMessage("AssignPrevious");
 
-        //});
+        });
 
         keywords.Add("now", () =>
         {
             Debug.Log("keyword added");
-            //GameObject.FindGameObjectWithTag("LegoModel").SendMessage("ExpandModel");
-            GameObject.FindGameObjectWithTag("Bridge").SendMessage("ExpandModel");
-
+            try
+            {
+                GameObject.FindGameObjectWithTag("Bridge").SendMessage("ExpandModel");
+            }
+            catch
+            {
+                return;
+            }
+              
         });
 
-        keywords.Add("go", () =>
+        keywords.Add("Step",() =>
         {
             Debug.Log("keyword added");
-            GameObject.FindGameObjectWithTag("LegoModel").SendMessage("ExpandModel");
+            try
+            {
+                cameraObject.GetComponent<SpeechToTextManager>().SendMessage("StartRecording");
+            }
+            catch
+            {
+                return;
+            }
 
         });
+
 
         // Tell the KeywordRecognizer about our keywords.
         keywordRecognizer = new KeywordRecognizer(keywords.Keys.ToArray());
