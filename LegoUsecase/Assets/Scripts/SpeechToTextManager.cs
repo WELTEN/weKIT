@@ -7,6 +7,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Windows.Speech;
 
+/// <summary>
+/// Class for listening to the voice which coverts the voice to a integer and passes it on to the bridge behaviour class.
+/// If the recognized text is not a integer it ignores and restarts the listener
+/// </summary>
 public class SpeechToTextManager : MonoBehaviour
 {
 
@@ -14,8 +18,6 @@ public class SpeechToTextManager : MonoBehaviour
 
     // Use this string to cache the text currently displayed in the text box.
     private StringBuilder textSoFar;
-
-
 
     private bool hasRecordingStarted;
 
@@ -56,11 +58,15 @@ public class SpeechToTextManager : MonoBehaviour
         if (hasRecordingStarted && !Microphone.IsRecording(deviceName) && dictationRecognizer.Status == SpeechSystemStatus.Running)
         {
             hasRecordingStarted = false;
+            StopRecording();
             // This acts like pressing the Stop button and sends the message to the Communicator.
             // If the microphone stops as a result of timing out, make sure to manually stop the dictation recognizer.
             // Look at the StopRecording function.
             GameObject.FindGameObjectWithTag("Bridge").SendMessage("RecordStop");
+            StartCoroutine(RestartSpeechSystem());
+            
         }
+       
     }
 
     /// <summary>
@@ -88,24 +94,28 @@ public class SpeechToTextManager : MonoBehaviour
     /// </summary>
     public void StopRecording()
     {
-        Debug.Log("stop Recording");
+       
+
         // 3.a: Check if dictationRecognizer.Status is Running and stop it if so
         if (dictationRecognizer.Status == SpeechSystemStatus.Running)
         {
             dictationRecognizer.Stop();
-            try
-            {
-                PhraseRecognitionSystem.Restart();
+            Debug.Log(dictationRecognizer.Status);
 
-            }
-            catch (UnityException)
-            {
-                Debug.Log("PhraseRecognitionSystem could not be started");
-            }
+        }
+        Microphone.End(deviceName);
+
+        if (dictationRecognizer.Status == SpeechSystemStatus.Stopped)
+        {
+            PhraseRecognitionSystem.Restart();
+            Debug.Log(PhraseRecognitionSystem.Status);
+        }
+        else
+        {
+            Debug.Log(dictationRecognizer.Status+" & "+ PhraseRecognitionSystem.Status);
         }
 
-        Microphone.End(deviceName);
-        
+
 
     }
 
@@ -137,7 +147,6 @@ public class SpeechToTextManager : MonoBehaviour
             Microphone.End(deviceName);
             SendMessage("ResetAfterTimeout");
         }
-        //GameObject.FindGameObjectWithTag("Bridge").SendMessage("JumpToStep");
     }
 
     /// <summary>
@@ -151,20 +160,21 @@ public class SpeechToTextManager : MonoBehaviour
     }
 
 
-    private IEnumerator RestartSpeechSystem(KeywordManager keywordToStart)
+    private IEnumerator RestartSpeechSystem()
     {
+        Debug.Log("Restarting speech system");
         while (dictationRecognizer != null && dictationRecognizer.Status == SpeechSystemStatus.Running)
         {
             yield return null;
         }
-
-        keywordToStart.StartKeywordRecognizer();
+        PhraseRecognitionSystem.Restart();
+        
     }
 
     public int StepNumber()
     {
         int temp;
-        StopRecording();
+        //StopRecording();
 
         if (Int32.TryParse(textSoFar.ToString(),out temp))
         {

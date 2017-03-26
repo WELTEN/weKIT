@@ -18,71 +18,72 @@ public class SpeechManager : MonoBehaviour
 
         Debug.Log("Speech Recognition started");
         cameraObject = Camera.main;
-        //keywords.Add("Snap", () =>
-        //{
-        //   Debug.Log("keyword added");
-        //   cameraObject.GetComponent<CapturePhoto>().SendMessage("Capture");
 
-        //});
-
-        keywords.Add("Next", () =>
-        {
-            Debug.Log("keyword added");
-            //GameObject.FindGameObjectWithTag("DisplayManual").SendMessage("AssignNext");
-            try
+            keywords.Add("Next", () =>
             {
-                GameObject.FindGameObjectWithTag("Bridge").SendMessage("AssignNext");
-            }
-            catch
-            {
-                return;
-            }
+                Debug.Log("keyword added");
+                //GameObject.FindGameObjectWithTag("DisplayManual").SendMessage("AssignNext");
+                try
+                {
+                    GameObject.FindGameObjectWithTag("Bridge").SendMessage("AssignNext");
+                }
+                catch
+                {
+                    return;
+                }
 
-        });
+            });
 
-        keywords.Add("Previous", () =>
-        {
-            Debug.Log("keyword added");
-            try
+            keywords.Add("Previous", () =>
             {
-                GameObject.FindGameObjectWithTag("Bridge").SendMessage("AssignPrevious");
-            } catch
-            {
-                return;
-            }
-            
-            //GameObject.FindGameObjectWithTag("DisplayManual").SendMessage("AssignPrevious");
+                Debug.Log("keyword added");
+                try
+                {
+                    GameObject.FindGameObjectWithTag("Bridge").SendMessage("AssignPrevious");
+                }
+                catch
+                {
+                    return;
+                }
 
-        });
+                //GameObject.FindGameObjectWithTag("DisplayManual").SendMessage("AssignPrevious");
 
-        keywords.Add("now", () =>
-        {
-            Debug.Log("keyword added");
-            try
-            {
-                GameObject.FindGameObjectWithTag("Bridge").SendMessage("ExpandModel");
-            }
-            catch
-            {
-                return;
-            }
-              
-        });
+            });
 
-        keywords.Add("Step",() =>
-        {
-            Debug.Log("keyword added");
-            try
+            keywords.Add("now", () =>
             {
-                cameraObject.GetComponent<SpeechToTextManager>().SendMessage("StartRecording");
-            }
-            catch
+                Debug.Log("keyword added");
+                try
+                {
+                    GameObject.FindGameObjectWithTag("Bridge").SendMessage("ExpandModel");
+                }
+                catch
+                {
+                    return;
+                }
+
+            });
+
+            keywords.Add("Step", () =>
             {
-                return;
-            }
+                Debug.Log("keyword added");
+                try
+                {
+                    cameraObject.GetComponent<SpeechToTextManager>().SendMessage("StartRecording");
+                }
+                catch
+                {
+                    return;
+                }
 
-        });
+            });
 
+            //keywords.Add("Snap", () =>
+            //{
+            //   Debug.Log("keyword added");
+            //   cameraObject.GetComponent<CapturePhoto>().SendMessage("Capture");
+
+            //});    
 
         // Tell the KeywordRecognizer about our keywords.
         keywordRecognizer = new KeywordRecognizer(keywords.Keys.ToArray());

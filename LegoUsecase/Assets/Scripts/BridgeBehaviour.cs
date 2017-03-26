@@ -97,7 +97,7 @@ public class BridgeBehaviour : MonoBehaviour {
         {
             stepNumber = i;
         }
-        
+        TurnAllBlockOff();
         TurnModelOn();
     }
 

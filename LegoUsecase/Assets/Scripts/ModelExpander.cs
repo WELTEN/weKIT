@@ -13,12 +13,12 @@ public class ModelExpander : MonoBehaviour {
     /// </summary>
     List<Transform> legoBlock;
     bool isExpanded=false;
-    Bounds modelBounds;
+    Vector3 modelCenter;
     
 	// Use this for initialization
 	void Start () {
         legoBlock = new List<Transform>();
-        modelBounds = gameObject.GetComponent<MeshRenderer>().bounds;
+       
         //Iterate through the first depth of children and add them to list
         foreach (Transform T in gameObject.GetComponentsInChildren<Transform>())
         {
@@ -33,16 +33,18 @@ public class ModelExpander : MonoBehaviour {
     /// </summary>
     void ExpandModel()
     {
-        Vector3 modelCenter = gameObject.GetComponent<MeshRenderer>().bounds.center;
-        
+        modelCenter = gameObject.GetComponent<MeshRenderer>().bounds.center;
+        Debug.Log(modelCenter);
         if (isExpanded == false)
         {
             foreach (Transform g in legoBlock)
             {
+
                 //calculate the vectore between 2 points and increase it by a scalar
                 Vector3 direction = g.localPosition - modelCenter;
                 Debug.Log(direction);
-                g.localPosition +=  direction * 0.5f;
+                //normalize inorder to avoid minute additions when calcuating vectors
+                g.localPosition +=  direction.normalized * 0.05f;
 
             }  
         }
@@ -51,9 +53,9 @@ public class ModelExpander : MonoBehaviour {
             foreach (Transform g in legoBlock)
             {
                 //calculate the vectore between 2 points and increase it by a scalar
-                Vector3 direction = g.localPosition - modelCenter;
+                Vector3 direction = modelCenter-g.localPosition;
                 Debug.Log(direction);
-                g.localPosition -= direction * 0.5f;
+                g.localPosition += direction.normalized * 0.05f;
             }
         }
 
